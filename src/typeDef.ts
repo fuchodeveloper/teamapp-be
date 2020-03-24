@@ -1,11 +1,6 @@
 import { gql } from 'apollo-server';
 
 export default gql`
-  type Cat {
-    id: ID!
-    name: String!
-  }
-
   type Team {
     id: ID!
     name: String!
@@ -56,8 +51,6 @@ export default gql`
   }
 
   type Query {
-    hello: String!
-    cat: [Cat!]!
     team(id: ID!): Team
   }
 
