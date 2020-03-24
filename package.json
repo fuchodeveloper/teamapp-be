@@ -8,8 +8,7 @@
     "start": "node dist/server",
     "start:env": "nodemon --require dotenv/config dist/server",
     "start:dev": "NODE_ENV=development npm run build",
-    "started": "npm-run-all --parallel start:dev start:env",
-    "start1": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js && node --require dotenv/config dist/server"
+    "started": "npm-run-all --parallel start:dev start:env"
   },
   "repository": {
     "type": "git",
@@ -37,8 +36,10 @@
   },
   "dependencies": {
     "@types/mongoose": "^5.7.6",
+    "@types/shortid": "0.0.29",
     "apollo-server": "^2.11.0",
     "graphql": "^14.6.0",
-    "mongoose": "^5.9.5"
+    "mongoose": "^5.9.5",
+    "shortid": "^2.2.15"
   }
 }

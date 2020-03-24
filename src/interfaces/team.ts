@@ -1,14 +1,11 @@
-interface Users {
-  id: String;
-  firstName: String
-  lastName: String
-  userName: String
-  team: String
-  role: String
+export interface TeamInterface {
+  team: Team
 }
 
-export interface Team  {
-  id: String;
+interface Team {
   name: String;
   lead?: String;
-}
+  uniqueId: String;
+  duties?: String;
+  creator: String;
+};

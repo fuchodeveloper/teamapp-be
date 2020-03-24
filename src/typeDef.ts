@@ -9,23 +9,50 @@ export default gql`
   type Team {
     id: ID!
     name: String!
+    uniqueId: String
+    duties: String
+    lead: String
+    creator: String
   }
 
   type User {
     id: ID!
     firstName: String!
     lastName: String!
-    userName: String
+    username: String
     team: String
     role: String
+    email: String
+  }
+
+  type TeamLead {
+    teamUniqueId: String!
+    creator: String!
+    start: String!
+    stop: String
   }
 
   input UserInput {
     firstName: String!
     lastName: String!
-    userName: String
+    username: String
     team: String
     role: String
+    email: String
+  }
+
+  input CreateTeamInput {
+    name: String!
+    duties: String
+    lead: String
+    creator: String!
+  }
+
+  input CreateTeamLeadInput {
+    teamUniqueId: String!
+    creator: String!
+    start: String!
+    stop: String
   }
 
   type Query {
@@ -36,7 +63,8 @@ export default gql`
 
   type Mutation {
     createCat(name: String!): Cat!
-    createTeamMembers(name: String!, lead: String, members: UserInput): [Team]
-    createTeam(name: String!): Team!
+    createUsers(users: [UserInput]): [User]
+    createTeam(team: CreateTeamInput): Team!
+    createTeamLead(teamLead: CreateTeamLeadInput!): TeamLead!
   }
 `;

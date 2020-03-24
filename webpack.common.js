@@ -15,7 +15,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    alias: {
+      src: path.resolve(__dirname, 'src/')
+    }
   },
   target: 'node'
 }
