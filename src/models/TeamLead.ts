@@ -4,7 +4,9 @@ const teamLeadSchema = new Schema({
   teamUniqueId: String,
   creator: String,
   start: String,
-  stop: String
+  stop: String,
+  createdAt: String,
+  updatedAt: String,
 })
 
 export const TeamLead = model('TeamLead', teamLeadSchema);

@@ -26,6 +26,8 @@ export default gql`
     creator: String!
     start: String!
     stop: String
+    createdAt: String!
+    updatedAt: String!
   }
 
   input UserInput {
@@ -64,7 +66,7 @@ export default gql`
   type Mutation {
     createUsers(users: [UserInput]): [User]
     createTeam(team: CreateTeamInput): Team!
-    createTeamLead(teamLead: CreateTeamLeadInput!): TeamLead!
+    createTeamLead(input: CreateTeamLeadInput!): TeamLead!
   }
 `;
 /*

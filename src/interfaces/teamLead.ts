@@ -7,5 +7,7 @@ interface TeamLead {
   teamUniqueId: String;
   creator: String;
   start: String;
-  stop: String
+  stop: String;
+  createdAt: String;
+  updatedAt: String;
 };

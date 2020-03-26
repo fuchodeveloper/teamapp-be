@@ -30,7 +30,12 @@ export default {
 
     createTeamLead: async (_: any, { input: { teamUniqueId, creator, start, stop } } : TeamLeadInterface) => {
       const requestBody = {
-        teamUniqueId, creator, start, stop
+        teamUniqueId,
+        creator, 
+        start, 
+        stop,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
       };
 
       const teamLead = new TeamLead(requestBody);
@@ -39,6 +44,7 @@ export default {
     },
 
     updateTeamLead: async () => {
+      // updates team lead manually or auto-triggered by date stop event
       
     },
 
