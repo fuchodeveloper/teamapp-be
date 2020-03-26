@@ -5,8 +5,6 @@ const teamLeadSchema = new Schema({
   creator: String,
   start: String,
   stop: String,
-  createdAt: String,
-  updatedAt: String,
-})
+}, { timestamps: true })
 
 export const TeamLead = model('TeamLead', teamLeadSchema);

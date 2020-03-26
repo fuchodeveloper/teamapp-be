@@ -11,8 +11,8 @@ export default {
   Query: {
     team: (parent: object, args: { id: String }, context: object, info: object) => Team.findOne({ uniqueId: args.id }),
     getTeamLead: (_: object, { input: { id, creator } }: TeamLeadInterface ) => {
-      return TeamLead.findOne({ _id: id, creator })
-    }
+      return TeamLead.findOne({ _id: id, creator });
+    },
   },
 
   Mutation: {
@@ -28,14 +28,12 @@ export default {
       return team;
     },
 
-    createTeamLead: async (_: any, { input: { teamUniqueId, creator, start, stop } } : TeamLeadInterface) => {
+    createTeamLead: async (_: object, { input: { teamUniqueId, creator, start, stop } } : TeamLeadInterface) => {
       const requestBody = {
         teamUniqueId,
         creator, 
         start, 
         stop,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
       };
 
       const teamLead = new TeamLead(requestBody);
@@ -43,13 +41,13 @@ export default {
       return teamLead;
     },
 
-    updateTeamLead: async () => {
+    updateTeamLead: async (_: object, { input: { id, teamUniqueId, creator, start, stop } }: TeamLeadInterface) => {
       // updates team lead manually or auto-triggered by date stop event
-      
+      return await TeamLead.findOneAndUpdate({ _id: id, teamUniqueId, creator }, { start, stop }, { new: true });
     },
 
     createUsers: async (_: any, args: { users: Array<UserInterface> } ) => {
-      // Hyderate request body with modified data to generate username
+      // Hydrate request body with modified data to generate username
       const modifiedRequestBody = args.users.map((user: UserInterface) => ({
         firstName: user.firstName,
         lastName: user.lastName,

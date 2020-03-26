@@ -6,6 +6,6 @@ const teamSchema = new Schema({
   duties: String,
   lead: String,
   creator: { type: String, required: true },
-})
+}, { timestamps: true })
 
 export const Team = model('Team', teamSchema);

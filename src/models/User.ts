@@ -7,6 +7,6 @@ const userSchema = new Schema({
   team: String,
   role: String,
   email: String
-});
+}, { timestamps: true });
 
 export const User = model('User', userSchema);

@@ -13,7 +13,7 @@ const startServer = async () => {
     playground: environment.apollo.playground
   });
   
-  await mongoose.connect(environment.database, {useNewUrlParser: true, useUnifiedTopology: true});
+  await mongoose.connect(environment.database, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
   server.listen(environment.port)
     .then(({ url }) => console.log(`server ready at ${url}`));

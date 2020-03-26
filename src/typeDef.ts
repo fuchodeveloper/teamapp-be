@@ -53,6 +53,14 @@ export default gql`
     stop: String
   }
 
+  input UpdateTeamLeadInput {
+    id: ID!
+    teamUniqueId: String!
+    creator: String!
+    start: String!
+    stop: String
+  }
+
   input GetTeamLeadInput {
     id: ID!
     creator: String
@@ -61,12 +69,14 @@ export default gql`
   type Query {
     team(id: ID!): Team
     getTeamLead(input: GetTeamLeadInput!): TeamLead!
+    user(id: ID): User!
   }
 
   type Mutation {
     createUsers(users: [UserInput]): [User]
     createTeam(team: CreateTeamInput): Team!
     createTeamLead(input: CreateTeamLeadInput!): TeamLead!
+    updateTeamLead(input: UpdateTeamLeadInput!): TeamLead!
   }
 `;
 /*
