@@ -1,8 +1,9 @@
 export interface TeamLeadInterface {
-  teamLead: TeamLead
+  input: TeamLead
 };
 
 interface TeamLead {
+  id: string;
   teamUniqueId: String;
   creator: String;
   start: String;

@@ -9,7 +9,10 @@ import { TeamLeadInterface } from './interfaces/teamLead';
 
 export default {
   Query: {
-    team: (parent: object, args: { id: String; }, context: object, info: object) => Team.findOne({ uniqueId: args.id }),
+    team: (parent: object, args: { id: String }, context: object, info: object) => Team.findOne({ uniqueId: args.id }),
+    getTeamLead: (_: object, { input: { id, creator } }: TeamLeadInterface ) => {
+      return TeamLead.findOne({ _id: id, creator })
+    }
   },
 
   Mutation: {
@@ -25,7 +28,7 @@ export default {
       return team;
     },
 
-    createTeamLead: async (_: any, { teamLead: { teamUniqueId, creator, start, stop } } : TeamLeadInterface) => {
+    createTeamLead: async (_: any, { input: { teamUniqueId, creator, start, stop } } : TeamLeadInterface) => {
       const requestBody = {
         teamUniqueId, creator, start, stop
       };
@@ -33,6 +36,10 @@ export default {
       const teamLead = new TeamLead(requestBody);
       await teamLead.save();
       return teamLead;
+    },
+
+    updateTeamLead: async () => {
+      
     },
 
     createUsers: async (_: any, args: { users: Array<UserInterface> } ) => {

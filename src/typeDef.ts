@@ -21,6 +21,7 @@ export default gql`
   }
 
   type TeamLead {
+    id: ID!
     teamUniqueId: String!
     creator: String!
     start: String!
@@ -50,14 +51,25 @@ export default gql`
     stop: String
   }
 
+  input GetTeamLeadInput {
+    id: ID!
+    creator: String
+  }
+
   type Query {
     team(id: ID!): Team
+    getTeamLead(input: GetTeamLeadInput!): TeamLead!
   }
 
   type Mutation {
-    createCat(name: String!): Cat!
     createUsers(users: [UserInput]): [User]
     createTeam(team: CreateTeamInput): Team!
     createTeamLead(teamLead: CreateTeamLeadInput!): TeamLead!
   }
 `;
+/*
+ TODO:
+ CreateTeamInput make required
+ ALL: createdAt & updatedAt for all types: Date.now()
+ use the word `input` for Mutation inputs more than one field
+*/
