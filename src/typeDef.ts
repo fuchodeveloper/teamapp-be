@@ -6,7 +6,7 @@ export default gql`
     name: String!
     uniqueId: String
     duties: String
-    lead: String
+    lead: TeamLead
     creator: String
   }
 
@@ -26,6 +26,7 @@ export default gql`
     creator: String!
     start: String!
     stop: String
+    team: Team
     createdAt: String!
     updatedAt: String!
   }
@@ -69,7 +70,7 @@ export default gql`
   type Query {
     team(id: ID!): Team
     getTeamLead(input: GetTeamLeadInput!): TeamLead!
-    user(id: ID): User!
+    lead: TeamLead!
   }
 
   type Mutation {
@@ -79,9 +80,3 @@ export default gql`
     updateTeamLead(input: UpdateTeamLeadInput!): TeamLead!
   }
 `;
-/*
- TODO:
- CreateTeamInput make required
- ALL: createdAt & updatedAt for all types: Date.now()
- use the word `input` for Mutation inputs more than one field
-*/

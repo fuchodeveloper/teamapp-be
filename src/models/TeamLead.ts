@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const teamLeadSchema = new Schema({
-  teamUniqueId: String,
+  teamUniqueId: { type: String, required: true },
   creator: String,
   start: String,
   stop: String,

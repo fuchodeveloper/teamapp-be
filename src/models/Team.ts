@@ -1,8 +1,8 @@
 import { Schema, model }  from 'mongoose';
 
 const teamSchema = new Schema({
-  name: String,
-  uniqueId: String,
+  name: { type: String, required: true },
+  uniqueId: { type: String, required: true },
   duties: String,
   lead: String,
   creator: { type: String, required: true },

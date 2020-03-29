@@ -8,6 +8,4 @@ interface TeamLead {
   creator: String;
   start: String;
   stop: String;
-  createdAt: String;
-  updatedAt: String;
 };
