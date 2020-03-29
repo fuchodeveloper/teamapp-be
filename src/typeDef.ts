@@ -8,6 +8,7 @@ export default gql`
     duties: String
     lead: TeamLead
     creator: String
+    members: [TeamUsers]
   }
 
   type User {
@@ -20,20 +21,30 @@ export default gql`
     email: String
   }
 
+  type TeamUsers {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    team: String!
+  }
+
   type TeamLead {
     id: ID!
     teamUniqueId: String!
     creator: String!
     start: String!
     stop: String
-    team: Team
-    createdAt: String!
-    updatedAt: String!
+  }
+
+  type Token {
+    token: String!
   }
 
   input UserInput {
     firstName: String!
     lastName: String!
+    password: String!
     username: String
     team: String
     role: String
@@ -67,16 +78,27 @@ export default gql`
     creator: String
   }
 
+  input CreateTeamUsersInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    team: String!
+  }
+
   type Query {
     team(id: ID!): Team
     getTeamLead(input: GetTeamLeadInput!): TeamLead!
     lead: TeamLead!
+    user(id: ID!): User!
+    login(email: String!, password: String!): Token!
+    members: [TeamUsers]
   }
 
   type Mutation {
-    createUsers(users: [UserInput]): [User]
+    createUsers(users: [UserInput]): [User]!
     createTeam(team: CreateTeamInput): Team!
     createTeamLead(input: CreateTeamLeadInput!): TeamLead!
     updateTeamLead(input: UpdateTeamLeadInput!): TeamLead!
+    createTeamUsers(input: [CreateTeamUsersInput]): [TeamUsers]
   }
 `;
