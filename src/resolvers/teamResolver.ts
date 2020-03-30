@@ -36,7 +36,6 @@ export default {
     ) => {
       
       const teamLead =  await TeamLead.findOne({ _id: id, creator });
-      console.log('id,', id, 'teamLead', teamLead);
       return teamLead;
     },
   },
