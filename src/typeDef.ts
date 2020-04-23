@@ -6,8 +6,8 @@ export default gql`
     name: String!
     uniqueId: String
     duties: String
-    lead: TeamLead
-    creator: String
+    teamLead: TeamLeadDetails
+    creator: String!
     members: [TeamUsers]
   }
 
@@ -35,10 +35,21 @@ export default gql`
     creator: String!
     start: String!
     stop: String
+    userId: String!
+  }
+
+  type TeamLeadDetails {
+    lead: TeamLead
+    user: TeamUsers
   }
 
   type Token {
+    id: ID!
     token: String!
+  }
+
+  type authData {
+    success: Boolean!
   }
 
   input UserInput {
@@ -54,8 +65,23 @@ export default gql`
   input CreateTeamInput {
     name: String!
     duties: String
-    lead: String
     creator: String!
+  }
+
+  input UpdateTeamInput {
+    name: String!
+    duties: String
+    teamLead: String
+    creator: String!
+    members: [UpdateTeamUsersInput]
+  }
+
+  input TeamLeadInput {
+    teamUniqueId: String!
+    creator: String!
+    start: String!
+    stop: String
+    userId: String!
   }
 
   input CreateTeamLeadInput {
@@ -63,14 +89,15 @@ export default gql`
     creator: String!
     start: String!
     stop: String
+    userId: String!
   }
 
   input UpdateTeamLeadInput {
-    id: ID!
     teamUniqueId: String!
     creator: String!
     start: String!
     stop: String
+    userId: String!
   }
 
   input GetTeamLeadInput {
@@ -85,20 +112,30 @@ export default gql`
     team: String!
   }
 
+  input UpdateTeamUsersInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    team: String!
+  }
+
   type Query {
     team(id: ID!): Team
     getTeamLead(input: GetTeamLeadInput!): TeamLead!
-    lead: TeamLead!
+    teamLead: TeamLead!
     user(id: ID!): User!
-    login(email: String!, password: String!): Token!
+    login(email: String!, password: String!): authData!
     members: [TeamUsers]
+    userId: TeamUsers
   }
 
   type Mutation {
     createUsers(users: [UserInput]): [User]!
     createTeam(team: CreateTeamInput): Team!
+    updateTeam(team: UpdateTeamInput): Team!
     createTeamLead(input: CreateTeamLeadInput!): TeamLead!
     updateTeamLead(input: UpdateTeamLeadInput!): TeamLead!
     createTeamUsers(input: [CreateTeamUsersInput]): [TeamUsers]
+    logout: authData!
   }
 `;

@@ -1,6 +1,9 @@
-import { ApolloServer, AuthenticationError } from 'apollo-server';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+import cors from 'cors';
+import express from 'express';
+import cookieParser from 'cookie-parser';
 
 import { Team } from 'src/models/Team';
 import { TeamLead } from 'src/models/TeamLead';
@@ -12,7 +15,7 @@ import typeDefs from './typeDef';
 import { environment } from './environment';
 
 const getAuthUser = async (req: any) => {
-  const token = req.headers['token'] || '';
+  const token = req?.cookies?.token || '';
 
   if (token) {
     try {
@@ -24,12 +27,27 @@ const getAuthUser = async (req: any) => {
 };
 
 const startServer = async () => {
+  const corsConfig =
+    process.env.NODE_ENV !== 'production'
+      ? {
+          origin: 'http://localhost:3000',
+          credentials: true,
+        }
+      : {
+          origin: 'https://domain.com/',
+          credentials: true,
+        };
+
+  const app = express();
+  app.use(cors(corsConfig));
+  app.use(cookieParser());
+
   const server = new ApolloServer({
     resolvers,
     typeDefs,
     introspection: environment.apollo.introspection,
     playground: environment.apollo.playground,
-    context: async ({ req }) => {
+    context: async ({ req, res }) => {
       if (req) {
         const authUser = await getAuthUser(req);
 
@@ -41,9 +59,16 @@ const startServer = async () => {
             User,
             TeamUser,
           },
+          req,
+          res,
         };
       }
     },
+  });
+
+  server.applyMiddleware({
+    app,
+    cors: false,
   });
 
   await mongoose.connect(environment.database, {
@@ -53,7 +78,7 @@ const startServer = async () => {
     useCreateIndex: true,
   });
 
-  server.listen(environment.port).then(({ url }) => console.log(`server ready at ${url}`));
+  app.listen(environment.port, () => console.log(`🚀 Server ready at http://localhost:4001${server.graphqlPath}`));
 
   if (module.hot) {
     module.hot.accept();

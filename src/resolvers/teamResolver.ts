@@ -1,5 +1,5 @@
 import { generate } from 'shortid';
-import { AuthenticationError } from 'apollo-server';
+import { AuthenticationError, ApolloError } from 'apollo-server';
 
 import { TeamLeadInterface } from 'src/interfaces/teamLead';
 import { TeamUsersInterface } from 'src/interfaces/teamUsers';
@@ -8,15 +8,22 @@ import { ITeamUser } from 'src/models/TeamUser';
 export default {
   // field level resolvers
   Team: {
-    lead: async (
+    teamLead: async (
       team: { uniqueId: String; creator: String },
       __: object,
-      { models: { TeamLead } }: { models: any },
+      { models: { TeamLead, TeamUser, User } }: { models: any },
     ) => {
       // type team gets resolved before lead
-      
+      // find team lead
       const teamLead = await TeamLead.findOne({ teamUniqueId: team.uniqueId, creator: team.creator });
-      return teamLead;
+
+      // find associated team user or registered user
+      const user = await TeamUser.findOne({ _id: teamLead?.userId });
+
+      return {
+        lead: teamLead,
+        user,
+      };
     },
     members: async ({ id }: { id: string }, __: object, { models: { TeamUser } }: any) => {
       // check if member is regular or temp, then determine which db to query
@@ -24,18 +31,29 @@ export default {
     },
   },
 
+  TeamLead: {
+    userId: async ({ id }: { id: string }, args: any, { models: { TeamUser } }: { models: any }) => {
+      // return user assigned as team lead
+
+      return await TeamUser.findOne({ _id: '5e8c82cf9c8c4d9a1a9b0ffe' });
+    },
+  },
+
   // resolver queries
   Query: {
-    team: async (parent: object, args: { id: string }, { models: { Team }, authUser }: any, info: object) => {
-      return await Team.findOne({ uniqueId: args.id });
+    team: async (_parent: object, args: any, { models: { Team }, authUser }: any, info: object) => {
+      if (!authUser) {
+        throw new AuthenticationError('You are not authenticated');
+      }
+      const team = await Team.findOne({ $or: [{ uniqueId: args.id }, { creator: args.id }] });
+      return team;
     },
     getTeamLead: async (
       _: object,
       { input: { id, creator } }: TeamLeadInterface,
       { models: { TeamLead } }: { models: any },
     ) => {
-      
-      const teamLead =  await TeamLead.findOne({ _id: id, creator });
+      const teamLead = await TeamLead.findOne({ _id: id, creator });
       return teamLead;
     },
   },
@@ -58,9 +76,29 @@ export default {
       return team;
     },
 
+    updateTeam: async (
+      _: any,
+      { team: { id, name, duties, lead, creator, members } }: any,
+      { models: { Team }, authUser }: any,
+    ) => {
+      if (!authUser) {
+        throw new AuthenticationError('You are not authenticated');
+      }
+
+      const requestBody = {
+        name,
+        uniqueId: generate(),
+        duties,
+        creator,
+      };
+      const team = new Team(requestBody);
+      await team.save();
+      return team;
+    },
+
     createTeamLead: async (
       _: object,
-      { input: { teamUniqueId, creator, start, stop } }: TeamLeadInterface,
+      { input: { teamUniqueId, creator, start, stop, userId } }: TeamLeadInterface,
       { models: { TeamLead }, authUser }: any,
     ) => {
       if (!authUser) {
@@ -71,6 +109,7 @@ export default {
         creator,
         start,
         stop,
+        userId,
       };
 
       const teamLead = new TeamLead(requestBody);
@@ -99,7 +138,31 @@ export default {
         throw new AuthenticationError('You are not authenticated');
       }
 
-      return await TeamUser.insertMany(input);
+      const getEmails = async () => {
+        const emailPromise: any = input.map(async (item: any) => {
+          return await TeamUser.find().where({ email: item.email }).exec();
+        });
+
+        return Promise.all(emailPromise);
+      };
+
+      // getEmails().then((res: any) => {
+      //   return userEmails.push(res);
+      // });
+      const res = await getEmails();
+      // console.log('res', res.flat());
+
+      try {
+        const teamUsers = await TeamUser.insertMany(input);
+        return teamUsers;
+      } catch (error) {
+        if (error?.code === 11000) {
+          const existingEmail = error?.op?.email || '';
+          return new ApolloError(`${existingEmail} exits in team`, 'DUPLICATE_USER', { email: existingEmail });
+        }
+
+        return new ApolloError('An unexpected error occurred. Try again!');
+      }
     },
   },
 };

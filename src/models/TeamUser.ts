@@ -1,6 +1,7 @@
 import { Schema, model, Document, Model } from 'mongoose';
 
 export interface ITeamUser extends Document {
+  find: Function;
   insertMany: Function;
 }
 

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AuthenticationError } from 'apollo-server';
+import { AuthenticationError, ApolloError } from 'apollo-server';
 
 import { UserInterface } from 'src/interfaces/user';
 import { environment } from 'src/environment';
@@ -14,19 +14,48 @@ export default {
       const user = await User.findOne({ _id: id });
       return user;
     },
-    login: async (_: any, { email, password }: { email: String; password: String }, { models: { User } }: any) => {
-      const user = await User.findOne({ email });
-      if (!user) {
-        throw new AuthenticationError('Invalid credentials');
+    login: async (_: any, { email, password }: { email: String; password: String }, { models: { User }, res }: any) => {
+      let user;
+
+      try {
+        user = await User.findOne({ email });
+
+        if (!user) {
+          throw new ApolloError('User not found.', 'NO_USER');
+        }
+
+        if (user) {
+          const matchPasswords = bcrypt.compareSync(password, user.password);
+          if (!matchPasswords) {
+            throw new AuthenticationError('Invalid credentials');
+          }
+
+          const generateToken = async (user: { id: string }) => {
+            return jwt.sign({ id: user.id }, environment.authKey, { expiresIn: '7d' });
+          };
+          const token = await generateToken(user);
+
+          res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            //domain: 'example.com', //set your domain
+            SameSite: 'Lax',
+          });
+
+          return { success: true };
+        }
+      } catch (error) {
+        if (error?.extensions?.code === 'UNAUTHENTICATED') {
+          return new ApolloError('Invalid credentials', 'INVALID_CREDENTIAL');
+        }
+
+        if (error?.extensions?.code === 'NO_USER') {
+          return new ApolloError('User not found.', 'NO_USER');
+        }
+
+        return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');
       }
-      const matchPasswords = bcrypt.compareSync(password, user.password);
-      if (!matchPasswords) {
-        throw new AuthenticationError('Invalid credentials');
-      }
-      const token = jwt.sign({ id: user.id }, environment.authKey, { expiresIn: '7d' });
-      return {
-        token,
-      };
     },
   },
 
@@ -46,7 +75,24 @@ export default {
         };
       });
 
-      return await User.insertMany(modifiedRequestBody);
+      try {
+        return await User.insertMany(modifiedRequestBody);
+      } catch (error) {
+        if (error.code === 11000) {
+          return new ApolloError('Email already exists', 'DUPLICATE_EMAIL');
+        }
+
+        return new ApolloError('An unexpected error occurred. Try again!', 'SERVER_ERROR');
+      }
+    },
+    logout: async (_: any, __: any, { res }: any) => {
+      
+      try {
+        await res.clearCookie('token');
+        return { success: true };
+      } catch (error) {
+        return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');
+      }
     },
   },
 };

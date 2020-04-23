@@ -1,6 +1,6 @@
 export interface TeamLeadInterface {
-  input: TeamLead
-};
+  input: TeamLead;
+}
 
 interface TeamLead {
   id: string;
@@ -8,4 +8,5 @@ interface TeamLead {
   creator: String;
   start: String;
   stop: String;
-};
+  userId: String;
+}

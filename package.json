@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/fuchodeveloper/teamapp-be#readme",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
     "@types/webpack-env": "^1.15.1",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
@@ -48,6 +49,10 @@
     "@types/mongoose": "^5.7.6",
     "@types/shortid": "0.0.29",
     "apollo-server": "^2.11.0",
+    "apollo-server-express": "^2.12.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "graphql": "^14.6.0",
     "mongoose": "^5.9.5",
     "shortid": "^2.2.15"
