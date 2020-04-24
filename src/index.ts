@@ -43,7 +43,7 @@ const startServer = async () => {
     credentials: true,
   };
   const app = express();
-  app.use(cors(corsConfig));
+  app.use(cors(corsConfig2));
   app.use(cookieParser());
 
   const server = new ApolloServer({
@@ -72,7 +72,7 @@ const startServer = async () => {
 
   server.applyMiddleware({
     app,
-    cors: true,
+    cors: false,
   });
 
   await mongoose.connect(environment.database, {
