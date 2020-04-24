@@ -1,9 +1,8 @@
+import { ApolloError, AuthenticationError } from 'apollo-server';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AuthenticationError, ApolloError } from 'apollo-server';
-
-import { UserInterface } from 'src/interfaces/user';
 import { environment } from 'src/environment';
+import { UserInterface } from 'src/interfaces/user';
 
 export default {
   Query: {
@@ -86,7 +85,6 @@ export default {
       }
     },
     logout: async (_: any, __: any, { res }: any) => {
-      
       try {
         await res.clearCookie('token');
         return { success: true };
