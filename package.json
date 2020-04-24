@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
+    "build:prod": "NODE_ENV=production npm run build",
     "start": "node dist/server",
     "start:env": "nodemon --require dotenv/config dist/server",
     "start:dev": "NODE_ENV=development npm run build",
