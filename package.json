@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/bin/rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
+    "build": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
+    "rimraf": "./node_modules/rimraf/bin.js",
     "build:old": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
     "build:prod": "NODE_ENV=production npm run build",
     "start:old": "NODE_ENV=production node dist/server",
