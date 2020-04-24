@@ -6,10 +6,12 @@
   "scripts": {
     "build": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
     "build:prod": "NODE_ENV=production npm run build",
-    "start": "node dist/server",
+    "start:old": "NODE_ENV=production node dist/server",
     "start:env": "nodemon --require dotenv/config dist/server",
     "start:dev": "NODE_ENV=development npm run build",
-    "started": "npm-run-all --parallel start:dev start:env"
+    "start:prod": "NODE_ENV=production npm run build",
+    "started": "npm-run-all --parallel start:dev start:env",
+    "start": "npm-run-all --parallel start:prod start:env"
   },
   "repository": {
     "type": "git",
