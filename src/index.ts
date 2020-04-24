@@ -43,7 +43,13 @@ const startServer = async () => {
     credentials: true,
   };
   const app = express();
-  app.use(cors(corsConfig2));
+  // app.use(cors(corsConfig2));
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
   app.use(cookieParser());
 
   const server = new ApolloServer({
@@ -71,11 +77,11 @@ const startServer = async () => {
   });
 
   server.applyMiddleware({
-    app,
+    // app,
     // cors: false,
-    cors: {
-      origin: 'https://teamapp-fe.now.sh',
-    },
+    app,
+    path: '/',
+    cors: false,
   });
 
   await mongoose.connect(environment.database, {
