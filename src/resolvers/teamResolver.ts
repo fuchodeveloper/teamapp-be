@@ -45,7 +45,11 @@ export default {
       if (!authUser) {
         throw new AuthenticationError('You are not authenticated');
       }
-      const team = await Team.findOne({ $or: [{ uniqueId: args.id }, { creator: args.id }] });
+      console.log('args', args);
+
+      const team = await Team.findOne({ $and: [{ uniqueId: args.uniqueId }, { creator: args.id }] });
+      console.log('team', team);
+
       return team;
     },
     getTeamLead: async (
@@ -60,20 +64,33 @@ export default {
 
   // resolver mutations
   Mutation: {
-    createTeam: async (_: any, { team: { name, duties, creator } }: any, { models: { Team }, authUser }: any) => {
+    createTeam: async (_: any, { team: { name, duties, creator } }: any, { models: { Team, User }, authUser }: any) => {
       if (!authUser) {
         throw new AuthenticationError('You are not authenticated');
       }
 
-      const requestBody = {
-        name,
-        uniqueId: generate(),
-        duties,
-        creator,
-      };
-      const team = new Team(requestBody);
-      await team.save();
-      return team;
+      try {
+        const requestBody = {
+          name,
+          uniqueId: generate(),
+          duties,
+          creator,
+        };
+        const teamRequest = new Team(requestBody);
+        const teamData = await teamRequest.save();
+
+        /**
+         * update user team value
+         */
+        const updatedUser = await User.findOneAndUpdate({ _id: creator }, { team: teamData?.uniqueId }, { new: true });
+        const updatedTeam = updatedUser?.team;
+
+        teamData.team = updatedTeam;        
+        
+        return teamData;
+      } catch (error) {
+        console.log('createTeam:error', error);
+      }
     },
 
     updateTeam: async (
@@ -87,7 +104,7 @@ export default {
 
       const requestBody = {
         name,
-        uniqueId: generate(),
+        uniqueId: generate(), // TODO: double check if I should remove
         duties,
         creator,
       };

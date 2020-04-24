@@ -9,6 +9,7 @@ export default gql`
     teamLead: TeamLeadDetails
     creator: String!
     members: [TeamUsers]
+    team: String
   }
 
   type User {
@@ -120,7 +121,7 @@ export default gql`
   }
 
   type Query {
-    team(id: ID!): Team
+    team(id: ID!, uniqueId: String!): Team
     getTeamLead(input: GetTeamLeadInput!): TeamLead!
     teamLead: TeamLead!
     user(id: ID!): User!
