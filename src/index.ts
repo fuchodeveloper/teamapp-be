@@ -72,7 +72,7 @@ const startServer = async () => {
 
   server.applyMiddleware({
     app,
-    cors: false,
+    cors: true,
   });
 
   await mongoose.connect(environment.database, {
