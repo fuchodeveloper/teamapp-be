@@ -11,7 +11,7 @@ export default {
     teamLead: async (
       team: { uniqueId: String; creator: String },
       __: object,
-      { models: { TeamLead, TeamUser, User } }: { models: any },
+      { models: { TeamLead, TeamUser } }: { models: any },
     ) => {
       // type team gets resolved before lead
       // find team lead
@@ -85,8 +85,8 @@ export default {
         const updatedUser = await User.findOneAndUpdate({ _id: creator }, { team: teamData?.uniqueId }, { new: true });
         const updatedTeam = updatedUser?.team;
 
-        teamData.team = updatedTeam;        
-        
+        teamData.team = updatedTeam;
+
         return teamData;
       } catch (error) {
         console.log('createTeam:error', error);
