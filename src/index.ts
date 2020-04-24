@@ -34,7 +34,7 @@ const startServer = async () => {
           credentials: true,
         }
       : {
-          origin: 'https://domain.com/',
+          origin: 'https://teamapp-fe.now.sh',
           credentials: true,
         };
 
