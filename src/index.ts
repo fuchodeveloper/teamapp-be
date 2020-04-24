@@ -43,7 +43,7 @@ const startServer = async () => {
     credentials: true,
   };
   const app = express();
-  app.use(cors(corsConfig));
+  app.use(cors());
   app.use(cookieParser());
 
   const server = new ApolloServer({
