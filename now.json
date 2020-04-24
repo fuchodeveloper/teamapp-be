@@ -1,14 +1,5 @@
 {
-  "name": "teamapp-api",
   "version": 2,
-  "builds": [{ "src": "dist/server.js", "use": "@now/node-server" }],
-  "routes": [
-    {
-      "src": "/",
-      "dest": "dist/server.js",
-      "methods": ["POST"]
-    }
-  ],
   "env": {
     "MONGODB_URI": "@my-mongodb-uri"
   }

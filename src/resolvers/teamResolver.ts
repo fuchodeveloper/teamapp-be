@@ -1,9 +1,9 @@
+import { ApolloError, AuthenticationError } from 'apollo-server';
 import { generate } from 'shortid';
-import { AuthenticationError, ApolloError } from 'apollo-server';
-
 import { TeamLeadInterface } from 'src/interfaces/teamLead';
 import { TeamUsersInterface } from 'src/interfaces/teamUsers';
 import { ITeamUser } from 'src/models/TeamUser';
+
 
 export default {
   // field level resolvers
