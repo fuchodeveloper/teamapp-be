@@ -27,7 +27,7 @@ const getAuthUser = async (req: any) => {
 };
 
 const startServer = async () => {
-  const corsConfig =
+  const corsConfig2 =
     process.env.NODE_ENV !== 'production'
       ? {
           origin: 'http://localhost:3000',
@@ -38,6 +38,10 @@ const startServer = async () => {
           credentials: true,
         };
 
+  const corsConfig = {
+    origin: '/',
+    credentials: true,
+  };
   const app = express();
   app.use(cors(corsConfig));
   app.use(cookieParser());
