@@ -72,7 +72,10 @@ const startServer = async () => {
 
   server.applyMiddleware({
     app,
-    cors: false,
+    // cors: false,
+    cors: {
+      origin: 'https://teamapp-fe.now.sh',
+    },
   });
 
   await mongoose.connect(environment.database, {
