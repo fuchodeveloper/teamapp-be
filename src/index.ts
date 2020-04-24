@@ -70,7 +70,7 @@ const startServer = async () => {
   // app.use(cors(corsConfig2));
   app.use(
     cors({
-      origin: true,
+      origin: 'http://localhost:3000',
       credentials: true,
     }),
   );
