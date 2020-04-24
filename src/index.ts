@@ -27,6 +27,30 @@ const getAuthUser = async (req: any) => {
 };
 
 const startServer = async () => {
+  const server = new ApolloServer({
+    resolvers,
+    typeDefs,
+    introspection: environment.apollo.introspection,
+    playground: environment.apollo.playground,
+    context: async ({ req, res }) => {
+      if (req) {
+        const authUser = await getAuthUser(req);
+
+        return {
+          authUser,
+          models: {
+            Team,
+            TeamLead,
+            User,
+            TeamUser,
+          },
+          req,
+          res,
+        };
+      }
+    },
+  });
+
   const corsConfig2 =
     process.env.NODE_ENV !== 'production'
       ? {
@@ -51,30 +75,6 @@ const startServer = async () => {
     }),
   );
   app.use(cookieParser());
-
-  const server = new ApolloServer({
-    resolvers,
-    typeDefs,
-    introspection: environment.apollo.introspection,
-    playground: environment.apollo.playground,
-    context: async ({ req, res }) => {
-      if (req) {
-        const authUser = await getAuthUser(req);
-
-        return {
-          authUser,
-          models: {
-            Team,
-            TeamLead,
-            User,
-            TeamUser,
-          },
-          req,
-          res,
-        };
-      }
-    },
-  });
 
   server.applyMiddleware({
     // app,
