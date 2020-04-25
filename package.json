@@ -11,7 +11,8 @@
     "start:dev": "NODE_ENV=development npm run build",
     "start:prod": "NODE_ENV=production npm run build",
     "started": "npm-run-all --parallel start:dev start:env",
-    "start": "npm-run-all --parallel start:prod start:env"
+    "start:temp-disabled": "npm-run-all --parallel start:prod start:env",
+    "start": "node --require dotenv/config dist/"
   },
   "repository": {
     "type": "git",
