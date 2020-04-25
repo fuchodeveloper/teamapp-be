@@ -3,5 +3,12 @@
   "builds": [{ "src": "src/index.ts", "use": "@now/node" }],
   "env": {
     "MONGODB_URI": "@my-mongodb-uri"
-  }
+  },
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/src/index.ts",
+      "methods": ["POST"]
+    }
+  ]
 }
