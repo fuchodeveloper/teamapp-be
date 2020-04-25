@@ -76,7 +76,7 @@ const startServer = async () => {
   });
   app.use(
     cors({
-      origin: true,
+      origin: 'https://teamapp-fe.now.sh',
       credentials: true,
     }),
   );
