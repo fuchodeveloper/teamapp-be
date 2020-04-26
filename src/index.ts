@@ -68,7 +68,7 @@ const startServer = async () => {
   };
   const app = express();
   // app.use(cors(corsConfig2));
-  app.options('https://teamapp-fe.now.sh', cors(corsConfig)); // include before other routes
+  app.options('https://teamapp-fe.now.sh', cors(corsConfig)); // include before other routes, for preflight request
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', 'https://teamapp-fe.now.sh');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -79,8 +79,6 @@ const startServer = async () => {
   app.use(cookieParser());
 
   server.applyMiddleware({
-    // app,
-    // cors: false,
     app,
     path: '/',
     cors: false,

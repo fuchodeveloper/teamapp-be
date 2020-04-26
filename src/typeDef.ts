@@ -44,9 +44,11 @@ export default gql`
     user: TeamUsers
   }
 
-  type Token {
+  type LoginData {
     id: ID!
-    token: String!
+    firstName: String
+    lastName: String
+    team: String
   }
 
   type authData {
@@ -125,7 +127,7 @@ export default gql`
     getTeamLead(input: GetTeamLeadInput!): TeamLead!
     teamLead: TeamLead!
     user(id: ID!): User!
-    login(email: String!, password: String!): authData!
+    login(email: String!, password: String!): LoginData!
     members: [TeamUsers]
     userId: TeamUsers
   }

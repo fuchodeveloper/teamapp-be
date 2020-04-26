@@ -29,8 +29,8 @@ export default {
             throw new AuthenticationError('Invalid credentials');
           }
 
-          const generateToken = async (user: { id: string }) => {
-            return jwt.sign({ id: user.id }, environment.authKey, { expiresIn: '7d' });
+          const generateToken = async (user: { id: string, email: string }) => {
+            return jwt.sign({ id: user.id, email: user.email }, environment.authKey, { expiresIn: '7d' });
           };
           const token = await generateToken(user);
 
@@ -40,11 +40,16 @@ export default {
             httpOnly: true,
             secure: isProd,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            // domain: isProd ? 'teamapp-fe.now.sh' : '', //set your domain
+            // domain: '', // set by default on the browser
             sameSite: 'none',
           });
 
-          return { success: true };
+          return {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            team: user?.team,
+          };
         }
       } catch (error) {
         if (error?.extensions?.code === 'UNAUTHENTICATED') {
