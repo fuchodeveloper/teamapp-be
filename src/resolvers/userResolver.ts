@@ -34,12 +34,14 @@ export default {
           };
           const token = await generateToken(user);
 
+          const isProd = process.env.NODE_ENV === 'production';
+
           res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: isProd,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            // domain: 'https://teamapp-fe.now.sh', //set your domain
-            SameSite: 'None',
+            domain: isProd ? 'https://teamapp-fe.now.sh' : '', //set your domain
+            SameSite: isProd ? 'Lax' : 'None',
           });
 
           return { success: true };
