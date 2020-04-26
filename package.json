@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
+    "build": "NODE_ENV=production rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
+    "build:original": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
     "build:prod": "NODE_ENV=production npm run build",
     "start:old": "NODE_ENV=production node dist/",
     "start:env": "nodemon --require dotenv/config dist/",
@@ -12,7 +13,7 @@
     "start:prod": "NODE_ENV=production npm run build",
     "started": "npm-run-all --parallel start:dev start:env",
     "start:temp-disabled": "npm-run-all --parallel start:prod start:env",
-    "start": "node dist/"
+    "start": "NODE_ENV=production node dist/"
   },
   "repository": {
     "type": "git",
