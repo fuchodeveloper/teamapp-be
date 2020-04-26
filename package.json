@@ -9,10 +9,12 @@
     "build:prod": "NODE_ENV=production npm run build",
     "start:old": "NODE_ENV=production node dist/",
     "start:env": "nodemon --require dotenv/config dist/",
+    "start:env-prod": "node dist/",
     "start:dev": "NODE_ENV=development npm run build",
     "start:prod": "NODE_ENV=production npm run build",
     "started": "npm-run-all --parallel start:dev start:env",
-    "start": "npm-run-all --parallel start:prod start:env"
+    "start:original": "npm-run-all --parallel start:prod start:env",
+    "start": "npm run start:prod && npm run start:env-prod"
   },
   "repository": {
     "type": "git",
@@ -30,24 +32,19 @@
     "@types/webpack-env": "^1.15.1",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
-    "bcrypt": "^4.0.1",
     "clean-webpack-plugin": "^3.0.0",
-    "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "2.0.2"
+  },
+  "dependencies": {
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.8.3",
+    "bcrypt": "^4.0.1",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
-    "prettier": "2.0.2",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-merge": "^4.2.2",
-    "webpack-node-externals": "^1.7.2"
-  },
-  "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/jsonwebtoken": "^8.3.8",
     "@types/mongoose": "^5.7.6",
@@ -59,6 +56,10 @@
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "mongoose": "^5.9.5",
-    "shortid": "^2.2.15"
+    "shortid": "^2.2.15",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
   }
 }
