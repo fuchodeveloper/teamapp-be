@@ -28,16 +28,7 @@
     "url": "https://github.com/fuchodeveloper/teamapp-be/issues"
   },
   "homepage": "https://github.com/fuchodeveloper/teamapp-be#readme",
-  "devDependencies": {
-    "@types/cookie-parser": "^1.4.2",
-    "@types/webpack-env": "^1.15.1",
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "2.0.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
@@ -61,6 +52,14 @@
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^1.7.2",
-    "clean-webpack-plugin": "^3.0.0"
+    "clean-webpack-plugin": "^3.0.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/webpack-env": "^1.15.1",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "2.0.2"
   }
 }
