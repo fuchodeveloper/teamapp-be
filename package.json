@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "NODE_ENV=production rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
+    "build": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
     "build:original": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
     "build:prod": "NODE_ENV=production npm run build",
     "start:old": "NODE_ENV=production node dist/",
@@ -12,8 +12,7 @@
     "start:dev": "NODE_ENV=development npm run build",
     "start:prod": "NODE_ENV=production npm run build",
     "started": "npm-run-all --parallel start:dev start:env",
-    "start:temp-disabled": "npm-run-all --parallel start:prod start:env",
-    "start": "NODE_ENV=production node dist/"
+    "start": "npm-run-all --parallel start:prod start:env"
   },
   "repository": {
     "type": "git",
