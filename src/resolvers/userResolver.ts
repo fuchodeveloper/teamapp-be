@@ -34,7 +34,7 @@ export default {
           };
           const token = await generateToken(user);
 
-          const isProd = process.env.NODE_ENV === 'production';
+          let isProd = process.env.NODE_ENV === 'production' ? true : false;
 
           res.cookie('token', token, {
             httpOnly: true,
