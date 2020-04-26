@@ -2,7 +2,8 @@
   "name": "teamapp-be",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/index",
+  "typings": "dist/index",
   "scripts": {
     "build": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",
     "build:original": "rimraf ./dist/ && webpack --config webpack.$NODE_ENV.js",

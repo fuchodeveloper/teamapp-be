@@ -68,13 +68,13 @@ const startServer = async () => {
   };
   const app = express();
   // app.use(cors(corsConfig2));
-
   app.options('*', cors()); // include before other routes
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', 'https://teamapp-fe.now.sh');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });
+
   app.use(
     cors({
       origin: 'https://teamapp-fe.now.sh',
