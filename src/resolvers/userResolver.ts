@@ -40,7 +40,7 @@ export default {
             httpOnly: true,
             secure: isProd,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            domain: isProd ? 'teamapp-fe.now.sh' : '', //set your domain
+            // domain: isProd ? 'teamapp-fe.now.sh' : '', //set your domain
             SameSite: isProd ? 'Lax' : 'None',
           });
 
