@@ -7,7 +7,7 @@ export default gql`
     uniqueId: String
     duties: String
     teamLead: TeamLeadDetails
-    creator: String!
+    creator: ID!
     members: [TeamUsers]
     team: String
   }
@@ -33,7 +33,7 @@ export default gql`
   type TeamLead {
     id: ID!
     teamUniqueId: String!
-    creator: String!
+    creator: ID!
     start: String!
     stop: String
     userId: String!

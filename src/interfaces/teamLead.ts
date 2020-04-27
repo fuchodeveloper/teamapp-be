@@ -1,3 +1,5 @@
+import { ObjectID } from 'mongodb';
+
 export interface TeamLeadInterface {
   input: TeamLead;
 }
@@ -5,7 +7,7 @@ export interface TeamLeadInterface {
 interface TeamLead {
   id: string;
   teamUniqueId: String;
-  creator: String;
+  creator: ObjectID;
   start: String;
   stop: String;
   userId: String;
