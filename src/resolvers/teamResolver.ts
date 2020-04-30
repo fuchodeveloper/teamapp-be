@@ -4,7 +4,6 @@ import { TeamLeadInterface } from 'src/interfaces/teamLead';
 import { TeamUsersInterface } from 'src/interfaces/teamUsers';
 import { ITeamUser } from 'src/models/TeamUser';
 
-
 export default {
   // field level resolvers
   Team: {
@@ -35,16 +34,18 @@ export default {
     userId: async ({ id }: { id: string }, args: any, { models: { TeamUser } }: { models: any }) => {
       // return user assigned as team lead
 
-      return await TeamUser.findOne({ _id: '5e8c82cf9c8c4d9a1a9b0ffe' });
+      return await TeamUser.findOne({ _id: id });
     },
   },
 
   // resolver queries
   Query: {
-    team: async (_parent: object, args: any, { models: { Team }, authUser }: any, info: object) => {
+    team: async (_parent: object, args: any, { models: { Team, TeamUser }, authUser }: any, info: object) => {
       if (!authUser) {
         throw new AuthenticationError('You are not authenticated');
       }
+
+      // check if request is from team creator or user in the team
 
       const team = await Team.findOne({ $and: [{ uniqueId: args.uniqueId }, { creator: args.id }] });
       console.log('team', team);
@@ -170,6 +171,8 @@ export default {
 
       try {
         const teamUsers = await TeamUser.insertMany(input);
+        console.log('teamUsers', teamUsers);
+
         return teamUsers;
       } catch (error) {
         if (error?.code === 11000) {

@@ -63,7 +63,7 @@ const startServer = async () => {
         };
 
   const app = express();
-  app.options(process.env.NODE_ENV !== 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
+  app.options(process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
 
   app.use(cors(corsConfigCheck));
   app.use(cookieParser());
