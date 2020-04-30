@@ -62,18 +62,8 @@ const startServer = async () => {
           credentials: true,
         };
 
-  const corsConfig = {
-    origin: 'https://teamapp-fe.now.sh',
-    credentials: true,
-  };
   const app = express();
-  // app.use(cors(corsConfig2));
-  app.options('https://teamapp-fe.now.sh', cors(corsConfigCheck)); // include before other routes, for preflight request
-  // app.use(function (req, res, next) {
-  //   res.header('Access-Control-Allow-Origin', 'https://teamapp-fe.now.sh');
-  //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  //   next();
-  // });
+  app.options(process.env.NODE_ENV !== 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
 
   app.use(cors(corsConfigCheck));
   app.use(cookieParser());
