@@ -51,6 +51,8 @@ const startServer = async () => {
     },
   });
 
+  console.log('process:index', process.env);
+
   const corsConfigCheck =
     process.env.NODE_ENV !== 'production'
       ? {
@@ -63,9 +65,20 @@ const startServer = async () => {
         };
 
   const app = express();
-  app.options(process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
+  const corsOptions = {
+    origin: 'https://teamapp-fe.now.sh',
+    credentials: true,
+  };
+  // app.options(process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
+   app.options('https://teamapp-fe.now.sh', cors(corsOptions)); // include before other routes
+   app.use(function (req, res, next) {
+     res.header('Access-Control-Allow-Origin', 'https://teamapp-fe.now.sh');
+     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+     next();
+   });
 
-  app.use(cors(corsConfigCheck));
+  // app.use(cors(corsConfigCheck));
+  app.use(cors(corsOptions));
   app.use(cookieParser());
 
   server.applyMiddleware({

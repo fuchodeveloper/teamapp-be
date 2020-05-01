@@ -38,7 +38,7 @@ export default {
 
           res.cookie('token', token, {
             httpOnly: true,
-            secure: isProd,
+            secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             // domain: '', // set by default on the browser
             sameSite: 'none',

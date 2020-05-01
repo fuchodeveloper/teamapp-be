@@ -1,6 +1,13 @@
 {
   "version": 2,
   "builds": [{ "src": "dist/index.js", "use": "@now/node-server" }],
+   "routes": [
+    {
+      "src": "dist/",
+      "dest": "dist/index.js",
+      "methods": ["GET", "POST", "OPTIONS"]
+    }
+  ],
   "env": {
     "MONGODB_URI": "@my-mongodb-uri"
   }
