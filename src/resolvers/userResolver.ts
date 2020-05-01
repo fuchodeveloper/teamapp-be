@@ -43,6 +43,14 @@ export default {
             // domain: '', // set by default on the browser
             sameSite: 'none',
           });
+          
+          res.cookie('token-legacy', token, {
+            httpOnly: true,
+            // secure: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            // domain: '', // set by default on the browser
+            // sameSite: 'none',
+          });
 
           return {
             id: user.id,
