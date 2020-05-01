@@ -48,7 +48,7 @@ export default {
       // check if request is from team creator or user in the team
 
       const team = await Team.findOne({ $and: [{ uniqueId: args.uniqueId }, { creator: args.id }] });
-      console.log('team', team);
+      console.log('team:props', team);
 
       return team;
     },

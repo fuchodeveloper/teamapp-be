@@ -96,9 +96,10 @@ const startServer = async () => {
     useCreateIndex: true,
   });
 
-  app.listen({ port: process.env.PORT || environment.port }, () =>
-    console.log(`🚀 Server ready at http://localhost:4001${server.graphqlPath}`),
-  );
+  app.listen();
+  // app.listen({ port: process.env.PORT || environment.port }, () =>
+  //   console.log(`🚀 Server ready at http://localhost:4001${server.graphqlPath}`),
+  // );
 
   if (module.hot) {
     module.hot.accept();
