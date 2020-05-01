@@ -15,7 +15,7 @@ import typeDefs from './typeDef';
 import { environment } from './environment';
 
 const getAuthUser = async (req: any) => {
-  const token = req?.cookies?.token || '';
+  const token = req?.cookies?.token || req?.cookies?.['token-legacy'] || '';
 
   if (token) {
     try {
@@ -50,8 +50,6 @@ const startServer = async () => {
       }
     },
   });
-
-  console.log('process:index', process.env);
 
   const corsConfigCheck =
     process.env.NODE_ENV !== 'production'
