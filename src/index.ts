@@ -16,6 +16,7 @@ import { environment } from './environment';
 
 const getAuthUser = async (req: any) => {
   const token = req?.cookies?.token || req?.cookies?.['token-legacy'] || '';
+  console.log('req.cookies', req.cookies);
 
   if (token) {
     try {
