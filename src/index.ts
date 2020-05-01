@@ -66,6 +66,7 @@ const startServer = async () => {
   const corsOptions = {
     origin: 'https://teamapp-fe.now.sh',
     credentials: true,
+    exposedHeaders: ['Set-Cookie'],
   };
   // app.options(process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
   app.options('https://teamapp-fe.now.sh', cors(corsOptions)); // include before other routes
