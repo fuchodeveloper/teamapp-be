@@ -36,6 +36,7 @@ export default {
 
           let isProd = process.env.NODE_ENV === 'production' ? true : false;
 
+          // set separate cookies for browsers that cannot process SameSite correctly
           res.cookie('token', token, {
             httpOnly: true,
             secure: true,
@@ -46,10 +47,8 @@ export default {
           
           res.cookie('token-legacy', token, {
             httpOnly: true,
-            // secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            // domain: '', // set by default on the browser
-            // sameSite: 'none',
+            secure: true,
           });
 
           return {
@@ -102,6 +101,7 @@ export default {
     logout: async (_: any, __: any, { res }: any) => {
       try {
         await res.clearCookie('token');
+        await res.clearCookie('token-legacy');
         return { success: true };
       } catch (error) {
         return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');

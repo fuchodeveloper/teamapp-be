@@ -24,9 +24,8 @@ export default {
         user,
       };
     },
-    members: async ({ id }: { id: string }, __: object, { models: { TeamUser } }: any) => {
-      // check if member is regular or temp, then determine which db to query
-      return await TeamUser.find({ team: id });
+    members: async ({ uniqueId }: { uniqueId: string }, __: object, { models: { TeamUser } }: any) => {
+      return await TeamUser.find({ teamUniqueId: uniqueId });
     },
   },
 
@@ -40,17 +39,34 @@ export default {
 
   // resolver queries
   Query: {
-    team: async (_parent: object, args: any, { models: { Team, TeamUser }, authUser }: any, info: object) => {
+    team: async (_parent: object, args: any, { models: { Team, TeamUser, User }, authUser }: any, info: object) => {
       if (!authUser) {
         throw new AuthenticationError('You are not authenticated');
       }
 
-      // check if request is from team creator or user in the team
+      try {
+        // check if request is from team creator or user in the team
 
-      const team = await Team.findOne({ $and: [{ uniqueId: args.uniqueId }, { creator: args.id }] });
-      console.log('team:props', team);
+        // use id to get email from User
+        const user = await User.findOne({ _id: args.id });
 
-      return team;
+        // check if email is in TeamUser for that specific teamUniqueId
+        const teamUser = await TeamUser.findOne({ $and: [{ email: user?.email }, { teamUniqueId: args?.uniqueId }] });
+
+        // check if `uniqueId` and `creator` ids of the auth user match the team viewed
+        // or Team:uniqueId and TeamUsers:teamUniqueId are equal for that team
+        let uniqueIdResult = args?.uniqueId === teamUser?.teamUniqueId ? args?.uniqueId : '';
+        const team = await Team.findOne({
+          $or: [
+            { $and: [{ uniqueId: args.uniqueId }, { creator: args.id }] },
+            { $and: [{ uniqueId: uniqueIdResult }] },
+          ],
+        });
+
+        return team;
+      } catch (error) {
+        return new ApolloError('An unexpected error occurred. Try again!');
+      }
     },
     getTeamLead: async (
       _: object,
@@ -155,23 +171,28 @@ export default {
         throw new AuthenticationError('You are not authenticated');
       }
 
+      /**
+       * Before creating team user, run a background check to see if
+       * any of the emails supplied exists, return error with the duplicate emails
+       */
       const getEmails = async () => {
         const emailPromise: any = input.map(async (item: any) => {
-          return await TeamUser.find().where({ email: item.email }).exec();
+          return await TeamUser.find().where({ email: item.email, teamUniqueId: item.teamUniqueId }).exec();
         });
 
         return Promise.all(emailPromise);
       };
 
-      // getEmails().then((res: any) => {
-      //   return userEmails.push(res);
-      // });
-      const res = await getEmails();
-      // console.log('res', res.flat());
+      const res: Array<any> = await getEmails();
+      const flattenArrs = res.flat();
+
+      if (flattenArrs.length) {
+        const emails = flattenArrs.map((i: { email: string }) => i.email);
+        return new ApolloError('Duplicate user', 'DUPLICATE_USER', { emails });
+      }
 
       try {
         const teamUsers = await TeamUser.insertMany(input);
-        console.log('teamUsers', teamUsers);
 
         return teamUsers;
       } catch (error) {

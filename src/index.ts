@@ -16,7 +16,6 @@ import { environment } from './environment';
 
 const getAuthUser = async (req: any) => {
   const token = req?.cookies?.token || req?.cookies?.['token-legacy'] || '';
-  console.log('req.cookies', req.cookies);
 
   if (token) {
     try {
@@ -65,7 +64,7 @@ const startServer = async () => {
 
   const app = express();
   const corsOptions = {
-    origin: 'https://teamapp-fe.now.sh',
+    origin: 'https://teamapp-fe.now.sh', // 'http://localhost:3000'
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
   };
@@ -97,9 +96,6 @@ const startServer = async () => {
   });
 
   app.listen({ port: process.env.PORT || environment.port });
-  // app.listen({ port: process.env.PORT || environment.port }, () =>
-  //   console.log(`🚀 Server ready at http://localhost:4001${server.graphqlPath}`),
-  // );
 
   if (module.hot) {
     module.hot.accept();

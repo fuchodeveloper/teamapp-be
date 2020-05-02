@@ -27,7 +27,7 @@ export default gql`
     firstName: String!
     lastName: String!
     email: String!
-    team: String!
+    teamUniqueId: String!
   }
 
   type TeamLead {
@@ -112,14 +112,14 @@ export default gql`
     firstName: String!
     lastName: String!
     email: String!
-    team: String!
+    teamUniqueId: String!
   }
 
   input UpdateTeamUsersInput {
     firstName: String!
     lastName: String!
     email: String!
-    team: String!
+    teamUniqueId: String!
   }
 
   type Query {

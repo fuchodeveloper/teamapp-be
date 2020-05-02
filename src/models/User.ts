@@ -12,7 +12,7 @@ const userSchema = new Schema(
     username: String,
     team: String,
     role: String,
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
   },
   { timestamps: true },
 );
