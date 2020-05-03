@@ -30,10 +30,28 @@ export default {
   },
 
   TeamLead: {
-    userId: async ({ id }: { id: string }, args: any, { models: { TeamUser } }: { models: any }) => {
+    user: async ({ userId }: { userId: string }, args: any, { models: { User, TeamUser } }: { models: any }) => {
       // return user assigned as team lead
 
-      return await TeamUser.findOne({ _id: id });
+      const user = await User.findOne({ _id: userId });
+      const teamUser = await TeamUser.findOne({ _id: userId });
+
+      return user || teamUser;
+    },
+    duties: async (
+      { teamUniqueId, creator }: { teamUniqueId: string; creator: string },
+      args: any,
+      { models: { Team } }: { models: any },
+    ) => {
+      try {
+        // return duties assigned to team lead
+        const response = await Team.findOne({ uniqueId: teamUniqueId, creator });
+        const { duties } = response || {};
+
+        return duties;
+      } catch (error) {
+        return new ApolloError('An unexpected error occurred. Try again!');
+      }
     },
   },
 
@@ -68,13 +86,22 @@ export default {
         return new ApolloError('An unexpected error occurred. Try again!');
       }
     },
+    /**
+     * Get the team lead for a team
+     * Hydrate return value with data from different models
+     */
     getTeamLead: async (
       _: object,
-      { input: { id, creator } }: TeamLeadInterface,
+      { input: { teamUniqueId, creator } }: TeamLeadInterface,
       { models: { TeamLead } }: { models: any },
     ) => {
-      const teamLead = await TeamLead.findOne({ _id: id, creator });
-      return teamLead;
+      try {
+        const teamLead = await TeamLead.findOne({ teamUniqueId, creator });
+
+        return teamLead;
+      } catch (error) {
+        return new ApolloError('An unexpected error occurred. Try again!');
+      }
     },
   },
 
@@ -105,7 +132,7 @@ export default {
 
         return teamData;
       } catch (error) {
-        console.log('createTeam:error', error);
+        return new ApolloError('An unexpected error occurred. Try again!');
       }
     },
 
@@ -129,14 +156,20 @@ export default {
       return team;
     },
 
-    createTeamLead: async (
+    /**
+     * Create or update the team lead for a given team
+     * also update the `duties` for given team if required
+     */
+    createOrUpdateTeamLead: async (
       _: object,
-      { input: { teamUniqueId, creator, start, stop, userId } }: TeamLeadInterface,
-      { models: { TeamLead }, authUser }: any,
+      { input: { teamUniqueId, creator, start, stop, userId, duties } }: TeamLeadInterface,
+      { models: { TeamLead, Team }, authUser }: any,
     ) => {
       if (!authUser) {
         throw new AuthenticationError('You are not authenticated');
       }
+      let newDuties = '';
+
       const requestBody = {
         teamUniqueId,
         creator,
@@ -145,9 +178,33 @@ export default {
         userId,
       };
 
+      if (duties) {
+        const response = await Team.findOne({ uniqueId: teamUniqueId, creator });
+        response.duties = duties;
+        const updatedDuties = await response.save();
+        newDuties = updatedDuties?.duties;
+      }
+
+      /*
+       update the team lead for a given team
+       or create a new team lead if none exists
+      */
+      const existingTeamLead = await TeamLead.findOne({ teamUniqueId, creator });
+
+      if (existingTeamLead) {
+        existingTeamLead.start = start;
+        existingTeamLead.stop = stop;
+        existingTeamLead.userId = userId;
+
+        const updatedTeamLead = await existingTeamLead.save();
+
+        return updatedTeamLead;
+      }
+
       const teamLead = new TeamLead(requestBody);
-      await teamLead.save();
-      return teamLead;
+      const newTeamLead = await teamLead.save();
+
+      return newTeamLead;
     },
 
     updateTeamLead: async (

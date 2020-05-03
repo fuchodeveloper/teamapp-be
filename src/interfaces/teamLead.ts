@@ -11,4 +11,5 @@ interface TeamLead {
   start: String;
   stop: String;
   userId: String;
+  duties: String;
 }

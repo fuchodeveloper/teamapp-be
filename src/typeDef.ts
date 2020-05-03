@@ -36,7 +36,9 @@ export default gql`
     creator: ID!
     start: String!
     stop: String
-    userId: String!
+    userId: String
+    user: User
+    duties: String
   }
 
   type TeamLeadDetails {
@@ -87,12 +89,13 @@ export default gql`
     userId: String!
   }
 
-  input CreateTeamLeadInput {
+  input CreateOrUpdateTeamLeadInput {
     teamUniqueId: String!
     creator: String!
     start: String!
     stop: String
     userId: String!
+    duties: String!
   }
 
   input UpdateTeamLeadInput {
@@ -104,7 +107,7 @@ export default gql`
   }
 
   input GetTeamLeadInput {
-    id: ID!
+    teamUniqueId: String!
     creator: String
   }
 
@@ -124,7 +127,7 @@ export default gql`
 
   type Query {
     team(id: ID!, uniqueId: String!): Team
-    getTeamLead(input: GetTeamLeadInput!): TeamLead!
+    getTeamLead(input: GetTeamLeadInput!): TeamLead
     teamLead: TeamLead!
     user(id: ID!): User!
     login(email: String!, password: String!): LoginData!
@@ -136,7 +139,7 @@ export default gql`
     createUsers(users: [UserInput]): [User]!
     createTeam(team: CreateTeamInput): Team!
     updateTeam(team: UpdateTeamInput): Team!
-    createTeamLead(input: CreateTeamLeadInput!): TeamLead!
+    createOrUpdateTeamLead(input: CreateOrUpdateTeamLeadInput!): TeamLead!
     updateTeamLead(input: UpdateTeamLeadInput!): TeamLead!
     createTeamUsers(input: [CreateTeamUsersInput]): [TeamUsers]
     logout: authData!

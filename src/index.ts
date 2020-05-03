@@ -64,7 +64,7 @@ const startServer = async () => {
 
   const app = express();
   const corsOptions = {
-    origin: 'https://teamapp-fe.now.sh', // 'http://localhost:3000'
+    origin: 'https://teamapp-fe.now.sh',
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
   };

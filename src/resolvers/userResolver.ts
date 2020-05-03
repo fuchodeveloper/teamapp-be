@@ -48,7 +48,6 @@ export default {
           res.cookie('token-legacy', token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            secure: true,
           });
 
           return {
