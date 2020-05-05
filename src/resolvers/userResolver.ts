@@ -29,7 +29,7 @@ export default {
             throw new AuthenticationError('Invalid credentials');
           }
 
-          const generateToken = async (user: { id: string, email: string }) => {
+          const generateToken = async (user: { id: string; email: string }) => {
             return jwt.sign({ id: user.id, email: user.email }, environment.authKey, { expiresIn: '7d' });
           };
           const token = await generateToken(user);
@@ -44,7 +44,7 @@ export default {
             // domain: '', // set by default on the browser
             sameSite: 'none',
           });
-          
+
           res.cookie('token-legacy', token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
@@ -101,6 +101,28 @@ export default {
       try {
         await res.clearCookie('token');
         await res.clearCookie('token-legacy');
+        return { success: true };
+      } catch (error) {
+        return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');
+      }
+    },
+    /**
+     * Handle request to delete a user
+     * only allowed for the creator of a team because the creator added the user to the team
+     */
+    deleteUser: async (
+      parent: any,
+      { uniqueId, userId }: { uniqueId: string; userId: string },
+      { models: { TeamUser, TeamLead } }: any,
+    ) => {
+      /* 
+        find requested user, delete if they exist
+        if user is a team lead, delete from team lead collection
+      */
+      try {
+        await TeamUser.deleteOne({ teamUniqueId: uniqueId, _id: userId });
+        await TeamLead.deleteOne({ teamUniqueId: uniqueId, userId });
+
         return { success: true };
       } catch (error) {
         return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');

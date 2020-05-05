@@ -53,7 +53,7 @@ export default gql`
     team: String
   }
 
-  type authData {
+  type successData {
     success: Boolean!
   }
 
@@ -142,6 +142,7 @@ export default gql`
     createOrUpdateTeamLead(input: CreateOrUpdateTeamLeadInput!): TeamLead!
     updateTeamLead(input: UpdateTeamLeadInput!): TeamLead!
     createTeamUsers(input: [CreateTeamUsersInput]): [TeamUsers]
-    logout: authData!
+    logout: successData!
+    deleteUser(uniqueId: String!, userId: String!, creator: String!): successData
   }
 `;
