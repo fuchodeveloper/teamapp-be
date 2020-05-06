@@ -123,7 +123,9 @@ export default {
         await TeamUser.deleteOne({ teamUniqueId: uniqueId, _id: userId });
         await TeamLead.deleteOne({ teamUniqueId: uniqueId, userId });
 
-        return { success: true };
+        const remainingTeamUsers = await TeamUser.find({ teamUniqueId: uniqueId });
+
+        return remainingTeamUsers;
       } catch (error) {
         return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');
       }
