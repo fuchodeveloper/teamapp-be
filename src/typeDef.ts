@@ -144,5 +144,6 @@ export default gql`
     createTeamUsers(input: [CreateTeamUsersInput]): [TeamUsers]
     logout: successData!
     deleteUser(uniqueId: String!, userId: String!, creator: String!): [TeamUsers]
+    deleteTeam(uniqueId: String!, creator: String!): successData!
   }
 `;

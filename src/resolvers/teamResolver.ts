@@ -261,5 +261,31 @@ export default {
         return new ApolloError('An unexpected error occurred. Try again!');
       }
     },
+
+    /**
+     * Team creator can delete their team
+     * also delete users associated with the team, and teamlead if any
+     */
+    deleteTeam: async (
+      parent: any,
+      { uniqueId, creator }: { uniqueId: string; creator: string },
+      { models: { Team, TeamUser, TeamLead }, authUser }: any,
+    ) => {
+      if (!authUser) {
+        throw new AuthenticationError('You are not authenticated');
+      }
+
+      try {
+        const deleteTeamResponse = await Team.deleteOne({ uniqueId, creator });
+        if (deleteTeamResponse.ok && deleteTeamResponse.deletedCount) {
+          await TeamLead.deleteOne({ teamUniqueId: uniqueId, creator });
+          await TeamUser.deleteMany({ teamUniqueId: uniqueId });
+
+          return { success: true };
+        }
+      } catch (error) {
+        return new ApolloError('An unexpected error occurred. Try again!');
+      }
+    },
   },
 };

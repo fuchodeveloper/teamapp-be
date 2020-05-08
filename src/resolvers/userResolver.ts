@@ -72,7 +72,10 @@ export default {
   },
 
   Mutation: {
-    createUsers: async (_: object, args: { users: Array<UserInterface> }, { models: { User } }: any) => {
+    createUsers: async (_: object, args: { users: Array<UserInterface> }, { models: { User }, authUser }: any) => {
+      if (!authUser) {
+        throw new AuthenticationError('You are not authenticated');
+      }
       // Hydrate request body with modified data to generate username
       const modifiedRequestBody = args.users.map((user: UserInterface) => {
         const hashedPassword = bcrypt.hashSync(user.password, 12);
@@ -113,8 +116,11 @@ export default {
     deleteUser: async (
       parent: any,
       { uniqueId, userId }: { uniqueId: string; userId: string },
-      { models: { TeamUser, TeamLead } }: any,
+      { models: { TeamUser, TeamLead }, authUser }: any,
     ) => {
+      if (!authUser) {
+        throw new AuthenticationError('You are not authenticated');
+      }
       /* 
         find requested user, delete if they exist
         if user is a team lead, delete from team lead collection
