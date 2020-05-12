@@ -51,6 +51,7 @@ export default gql`
     firstName: String
     lastName: String
     team: String
+    email: String
   }
 
   type successData {
@@ -133,6 +134,7 @@ export default gql`
     login(email: String!, password: String!): LoginData!
     members: [TeamUsers]
     userId: TeamUsers
+    otherTeams(email: String!, firstName: String!, lastName: String!): [TeamUsers]
   }
 
   type Mutation {

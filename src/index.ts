@@ -64,16 +64,16 @@ const startServer = async () => {
 
   const app = express();
   const corsOptions = {
-    origin: 'https://teamapp-fe.now.sh',
+    origin: 'http://localhost:3000',
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
   };
   // app.options(process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
-  app.options('https://teamapp-fe.now.sh', cors(corsOptions)); // include before other routes
+  app.options('http://localhost:3000', cors(corsOptions)); // include before other routes
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
-    res.header('Access-Control-Allow-Origin', 'https://teamapp-fe.now.sh');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });

@@ -55,6 +55,7 @@ export default {
             firstName: user.firstName,
             lastName: user.lastName,
             team: user?.team,
+            email: user.email
           };
         }
       } catch (error) {
@@ -73,9 +74,6 @@ export default {
 
   Mutation: {
     createUsers: async (_: object, args: { users: Array<UserInterface> }, { models: { User }, authUser }: any) => {
-      if (!authUser) {
-        throw new AuthenticationError('You are not authenticated');
-      }
       // Hydrate request body with modified data to generate username
       const modifiedRequestBody = args.users.map((user: UserInterface) => {
         const hashedPassword = bcrypt.hashSync(user.password, 12);

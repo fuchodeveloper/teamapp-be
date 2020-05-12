@@ -103,6 +103,22 @@ export default {
         return new ApolloError('An unexpected error occurred. Try again!');
       }
     },
+
+    /**
+     * Get all other teams a user belongs to
+     */
+    otherTeams: async (
+      _: object,
+      { firstName, lastName, email }: any,
+      { models: { TeamUser } }: { models: { TeamUser: any } },
+    ) => {
+
+      try {
+        const teamUsers = await TeamUser.find({ firstName, lastName, email });
+        // console.log('teamUsers', teamUsers);
+        return teamUsers;
+      } catch (error) {}
+    },
   },
 
   // resolver mutations
@@ -269,7 +285,7 @@ export default {
     deleteTeam: async (
       parent: any,
       { uniqueId, creator }: { uniqueId: string; creator: string },
-      { models: { Team, TeamUser, TeamLead }, authUser }: any,
+      { models: { Team, TeamUser, TeamLead, User }, authUser }: any,
     ) => {
       if (!authUser) {
         throw new AuthenticationError('You are not authenticated');
@@ -277,9 +293,27 @@ export default {
 
       try {
         const deleteTeamResponse = await Team.deleteOne({ uniqueId, creator });
+        /**
+         * Delete team from related models
+         */
         if (deleteTeamResponse.ok && deleteTeamResponse.deletedCount) {
-          await TeamLead.deleteOne({ teamUniqueId: uniqueId, creator });
-          await TeamUser.deleteMany({ teamUniqueId: uniqueId });
+          // find user and remove their team
+          const user = await User.findOne({
+            _id: creator,
+            team: uniqueId,
+          });
+
+          user.team = '';
+
+          await user.save();
+          await TeamLead.deleteOne({
+            teamUniqueId: uniqueId,
+            creator,
+          });
+
+          await TeamUser.deleteMany({
+            teamUniqueId: uniqueId,
+          });
 
           return { success: true };
         }
