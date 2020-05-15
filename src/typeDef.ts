@@ -134,7 +134,7 @@ export default gql`
     login(email: String!, password: String!): LoginData!
     members: [TeamUsers]
     userId: TeamUsers
-    otherTeams(email: String!, firstName: String!, lastName: String!): [TeamUsers]
+    otherTeams(email: String!, firstName: String!): [TeamUsers]
   }
 
   type Mutation {

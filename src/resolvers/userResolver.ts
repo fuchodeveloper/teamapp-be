@@ -1,6 +1,7 @@
 import { ApolloError, AuthenticationError } from 'apollo-server';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Iron from '@hapi/iron';
 import { environment } from 'src/environment';
 import { UserInterface } from 'src/interfaces/user';
 
@@ -29,33 +30,36 @@ export default {
             throw new AuthenticationError('Invalid credentials');
           }
 
+          /**
+           * Generate the user token and encrypt it using Iron
+           * @param user generate user object
+           */
           const generateToken = async (user: { id: string; email: string }) => {
             return jwt.sign({ id: user.id, email: user.email }, environment.authKey, { expiresIn: '7d' });
           };
           const token = await generateToken(user);
 
+          const tokenPassword = process.env.TOKEN_PASSWORD || '';
+          const sealedToken = await Iron.seal(token, tokenPassword, Iron.defaults);
+          // const unsealed = await Iron.unseal(sealed, ironPassword, Iron.defaults);
+
           let isProd = process.env.NODE_ENV === 'production' ? true : false;
 
           // set separate cookies for browsers that cannot process SameSite correctly
-          res.cookie('token', token, {
+          res.cookie('token', sealedToken, {
             httpOnly: true,
-            secure: true,
+            secure: isProd,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             // domain: '', // set by default on the browser
             sameSite: 'none',
           });
 
-          res.cookie('token-legacy', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-          });
-
           return {
             id: user.id,
             firstName: user.firstName,
-            lastName: user.lastName,
+            // lastName: user.lastName,
             team: user?.team,
-            email: user.email
+            email: user.email,
           };
         }
       } catch (error) {
@@ -101,7 +105,6 @@ export default {
     logout: async (_: any, __: any, { res }: any) => {
       try {
         await res.clearCookie('token');
-        await res.clearCookie('token-legacy');
         return { success: true };
       } catch (error) {
         return new ApolloError('An unexpected error occurred. Try again!', 'INTERNAL_SERVER_ERROR');

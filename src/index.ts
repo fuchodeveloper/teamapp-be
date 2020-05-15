@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import Iron from '@hapi/iron';
 
 import { Team } from 'src/models/Team';
 import { TeamLead } from 'src/models/TeamLead';
@@ -15,11 +16,13 @@ import typeDefs from './typeDef';
 import { environment } from './environment';
 
 const getAuthUser = async (req: any) => {
-  const token = req?.cookies?.token || req?.cookies?.['token-legacy'] || '';
+  const token = req?.cookies?.token || '';
+  const tokenPassword = process.env.TOKEN_PASSWORD || '';
 
   if (token) {
     try {
-      return jwt.verify(token, environment.authKey);
+      const unsealedToken = await Iron.unseal(token, tokenPassword, Iron.defaults);
+      return jwt.verify(unsealedToken, environment.authKey);
     } catch (e) {
       throw new AuthenticationError('Your session expired. Sign in again.');
     }
@@ -33,6 +36,8 @@ const startServer = async () => {
     introspection: environment.apollo.introspection,
     playground: environment.apollo.playground,
     context: async ({ req, res }) => {
+      console.log('req', req, 'res', res);
+      
       if (req) {
         const authUser = await getAuthUser(req);
 
@@ -51,25 +56,27 @@ const startServer = async () => {
     },
   });
 
-  const corsConfigCheck =
-    process.env.NODE_ENV !== 'production'
+  const corsConfig =
+    process.env.NODE_ENV === 'production'
       ? {
-          origin: 'http://localhost:3000',
+          origin: 'https://teamapp-fe.now.sh',
           credentials: true,
+          exposedHeaders: ['Set-Cookie']
         }
       : {
-          origin: 'https://teamapp-fe.now.sh',
+          origin: 'http://localhost:3000',
           credentials: true,
         };
 
+  const appurl = process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : 'http://localhost:3000';
   const app = express();
   const corsOptions = {
     origin: 'https://teamapp-fe.now.sh',
     credentials: true,
-    exposedHeaders: ['Set-Cookie'],
   };
-  // app.options(process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : '', cors(corsConfigCheck)); // include before other routes, for preflight request
-  app.options('https://teamapp-fe.now.sh', cors(corsOptions)); // include before other routes
+
+  app.options(appurl, cors(corsConfig)); // include before other routes
+  // app.options('https://teamapp-fe.now.sh', cors(corsOptions)); // include before other routes
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
@@ -78,8 +85,8 @@ const startServer = async () => {
     next();
   });
 
-  // app.use(cors(corsConfigCheck));
-  app.use(cors(corsOptions));
+  app.use(cors(corsConfig));
+  // app.use(cors(corsOptions));
   app.use(cookieParser());
 
   server.applyMiddleware({

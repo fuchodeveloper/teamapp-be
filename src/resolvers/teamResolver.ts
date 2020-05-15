@@ -109,13 +109,12 @@ export default {
      */
     otherTeams: async (
       _: object,
-      { firstName, lastName, email }: any,
+      { firstName, email }: any,
       { models: { TeamUser } }: { models: { TeamUser: any } },
     ) => {
 
       try {
-        const teamUsers = await TeamUser.find({ firstName, lastName, email });
-        // console.log('teamUsers', teamUsers);
+        const teamUsers = await TeamUser.find({ firstName, email });
         return teamUsers;
       } catch (error) {}
     },
