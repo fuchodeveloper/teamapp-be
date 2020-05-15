@@ -36,7 +36,7 @@ const startServer = async () => {
     introspection: environment.apollo.introspection,
     playground: environment.apollo.playground,
     context: async ({ req, res }) => {
-      console.log('req', req, 'res', res);
+      // console.log('req', req, 'res', res);
       
       if (req) {
         const authUser = await getAuthUser(req);
