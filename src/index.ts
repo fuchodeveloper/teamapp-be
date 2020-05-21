@@ -36,8 +36,6 @@ const startServer = async () => {
     introspection: environment.apollo.introspection,
     playground: environment.apollo.playground,
     context: async ({ req, res }) => {
-      // console.log('req', req, 'res', res);
-      
       if (req) {
         const authUser = await getAuthUser(req);
 
@@ -59,7 +57,7 @@ const startServer = async () => {
   const corsConfig =
     process.env.NODE_ENV === 'production'
       ? {
-          origin: 'https://teamapp-fe.now.sh',
+          origin: 'https://teamapp.now.sh',
           credentials: true,
           exposedHeaders: ['Set-Cookie']
         }
@@ -68,19 +66,19 @@ const startServer = async () => {
           credentials: true,
         };
 
-  const appurl = process.env.NODE_ENV === 'production' ? 'https://teamapp-fe.now.sh' : 'http://localhost:3000';
+  const appurl = process.env.NODE_ENV === 'production' ? 'https://teamapp.now.sh' : 'http://localhost:3000';
   const app = express();
   const corsOptions = {
-    origin: 'https://teamapp-fe.now.sh',
+    origin: 'https://teamapp.now.sh',
     credentials: true,
   };
 
   app.options(appurl, cors(corsConfig)); // include before other routes
-  // app.options('https://teamapp-fe.now.sh', cors(corsOptions)); // include before other routes
+  // app.options('https://teamapp.now.sh', cors(corsOptions)); // include before other routes
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
-    res.header('Access-Control-Allow-Origin', 'https://teamapp-fe.now.sh');
+    res.header('Access-Control-Allow-Origin', 'https://teamapp.now.sh');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });
